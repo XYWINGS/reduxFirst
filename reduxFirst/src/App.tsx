@@ -4,7 +4,9 @@ import './App.css'
 import Add from './components/Add'
 import List from './components/List'
 import { useAppDispatch } from './store/store'
-import { fetchPerson } from './store/feature/personSlice'
+import { fetchPerson } from './store/features/personSlice'
+import Cart from './components/Cart'
+import Products from './components/Products'
 
 function App() {
    //use this use effect fetchperson if u have a db connected
@@ -15,8 +17,10 @@ function App() {
 
   return (
     <div>
-     <Add />
-     <List />
+      <Add />
+      <List />
+      <Products />
+      <Cart />
     </div>
   )
 }
