@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AsyncThunk, createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 //export interface whixh defines the person object
 export interface Person{
@@ -17,6 +17,49 @@ const initialState : PersonState = {
     persons:[]
 }
 
+//create asyncfunc is a redux toolkit function. it take two arguments.
+//one is a uniqe key among other functions and a function
+//in this case is a async function for data fetching
+// Create the async thunk
+//you can use either one of these functions. 1st one is from ai
+// export const fetchPerson = createAsyncThunk<Person[], void, { rejectValue: string }>(
+//     "person/fetch",
+//     async (_, thunkAPI) => {
+//         const response = await fetch("http://localhost:8000/person", {
+//             method: "GET"
+//         });
+//         if (!response.ok) {
+//             return thunkAPI.rejectWithValue('Failed to fetch persons');
+//         }
+//         const data = await response.json() as Person[];
+//         return data;
+//     }
+// );
+
+export const fetchPerson : any= createAsyncThunk ("person/fetch" , 
+    async (thunkAPI)=>{
+    const response = await fetch("http://localhost:8000/person",{
+        method:"GET"
+    });
+    const data = response.json()
+    return data
+})
+
+export const savePerson : any = createAsyncThunk("person/save",async (name:string,thunkAPI)=>{
+    const response = await fetch("http://localhost:8000/person",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            name
+        })
+    })
+    const data =await response.json()
+    return data
+})
+
+
 //create slice
 export const PersonSlice = createSlice({
     name : "person",
@@ -31,8 +74,20 @@ export const PersonSlice = createSlice({
                 name:action.payload.name
             })     
         }
+    },
+
+    extraReducers: (builder)=>{
+        builder.addCase(fetchPerson.fulfilled,(state,action)=>{
+            state.persons = action.payload
+        })
+
+        builder.addCase(savePerson.fulfilled,(state,action)=>{
+            state.persons.push(action.payload)
+        })
     }
 })
 
 export default PersonSlice.reducer;
 export const {addPerson} = PersonSlice.actions
+
+

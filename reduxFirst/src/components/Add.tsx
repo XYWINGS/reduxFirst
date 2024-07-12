@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { addPerson } from '../store/feature/personSlice'
+import { addPerson, savePerson } from '../store/feature/personSlice'
 import { useAppDispatch } from '../store/store'
 
 const Add = () => {
@@ -16,6 +16,12 @@ const Add = () => {
             onClick={()=> dispatch(addPerson({name:name.current}))}
             >Add
         </button>
+
+        <button
+            onClick={()=> dispatch(savePerson(name.current))}
+            >Add using DB
+        </button>
+
     </div>
     )
 }
